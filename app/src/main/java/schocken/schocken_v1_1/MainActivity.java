@@ -24,12 +24,7 @@ public class MainActivity extends AppCompatActivity {
    public void startTheGame(final View view) {
         Log.d(debugString, "startGame");
         final Intent intent = new Intent(this, GameActivity.class);
-       String[] str = new String[100];
-       for(int i =0 ; i< str.length;++i){
-            str[i] = ""+i;
-       }
-        //intent.putExtra("players", new String[]{"Marco","Michelle"});
-       intent.putExtra("players", str);
+        intent.putExtra("players", new String[]{"Marco","Michelle"});
         startActivity(intent);
     }
 }
