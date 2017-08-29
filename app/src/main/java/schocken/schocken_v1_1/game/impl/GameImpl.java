@@ -37,6 +37,9 @@ public class GameImpl implements Game, GameObserver{
 
     @Override
     public void startNewgame() {
+        startPlayer = players.get(0);
+        currentPlayer = startPlayer;
+        currentPlayer.myTurn(true);
 
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -26,26 +27,37 @@
         android:gravity="center"
         android:id="@+id/diceLayout">
 
-        <Button
-            android:text="Button"
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dice1"
-            android:layout_weight="1" />
+            android:id="@+id/diceButton1"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            app:srcCompat="@drawable/dice1"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
 
-        <Button
-            android:text="Button"
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dice2"
-            android:layout_weight="1" />
+            android:id="@+id/diceButton2"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            app:srcCompat="@drawable/dice2"
+            android:adjustViewBounds="false"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
 
-        <Button
-            android:text="Button"
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/dice3"
-            android:layout_weight="1" />
+            android:id="@+id/diceButton3"
+            android:layout_weight="1"
+            android:background="@android:color/background_light"
+            app:srcCompat="@drawable/dice3"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +74,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rollTheDice"
-            android:layout_weight="0" />
+            android:layout_weight="1"
+            android:onClick="rollTheDice"
+            android:visibility="gone" />
+
+        <Button
+            android:text="Steht"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stay"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:onClick="stay" />
     </LinearLayout>
 
 </LinearLayout>

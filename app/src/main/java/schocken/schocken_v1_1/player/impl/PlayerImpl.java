@@ -100,7 +100,7 @@ public class PlayerImpl implements Player {
         dicesOut = new ArrayList<>(3); // TODO: Anzahl in Klasse "Settings" verschieben
         dicesIn = new ArrayList<>(3); // TODO: Anzahl in Klasse "Settings" verschieben
         // fill dice in
-        for (int i=0; i<dicesIn.size() ;++i){
+        for (int i=0; i<3 ;++i){// TODO: Anzahl in Klasse "Settings" verschieben
             dicesIn.add(new DiceImpl());
         }
         finish = false;
@@ -125,6 +125,10 @@ public class PlayerImpl implements Player {
          */
         // save, if this player is the start player of the round
         isStartPlayer = startPlayer;
+        // clear player view
+        playerView.clearPlayerView();
+        // connect the view with this player
+        playerView.setCurrentPlayer(this);
         // create now the possibilities he has
         createPossibilities();
 
@@ -233,12 +237,15 @@ public class PlayerImpl implements Player {
                 dicesIn.get(i).roll();
                 Log.d(debugMSG, "Dice["+i+"] = "+ dicesIn.get(i).getValue());
             }
+            playerView.uncoverDice();
             // if the current max shots is reached
             if(currentShots == 3) {
                 // the player is finished
                 finish = true;
                 Log.d(debugMSG, "finished");
             }
+            // create posibilities
+            createPossibilities();
                 // return true, that the player could roll his dices
                 return true;
         }else{
@@ -302,19 +309,24 @@ public class PlayerImpl implements Player {
          */
 
         if(currentShots == 0 && dicesIn.size() == 3){
+            Log.d(debugMSG,"currentShots == 0 && dicesIn.size() == 3");
+            playerView.enableRollTheDiceButton();
             // first time roll
-            boolean roll = rollTheDice(); // TODO: irgendwie das boolean noch auswerten ...
-            createPossibilities();
+
         }else{
             if(currentShots == 1 && isStartPlayer){
+                Log.d(debugMSG,"currentShots == 1 && isStartPlayer");
                 // set visible blind button
-
                 // set visible uncover button
+                playerView.enableRollTheDiceButton();
+                playerView.enableStayButton();
             }else{
                 // is the player able to roll
                 if(currentShots < gameObserver.getMaxShotsOfRound()){
+                    Log.d(debugMSG,"currentShots < gameObserver.getMaxShotsOfRound()");
                     // set visible uncover button
                 }else{
+                    Log.d(debugMSG,"else");
                     // not uncover
                     gameObserver.currentPlayerHasFinished();
                 }
