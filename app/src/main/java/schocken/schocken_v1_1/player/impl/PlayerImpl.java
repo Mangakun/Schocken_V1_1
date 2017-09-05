@@ -124,6 +124,7 @@ public class PlayerImpl implements Player {
         2. create possibilities
          */
         // save, if this player is the start player of the round
+        Log.d(debugMSG," It is my turn now "+name);
         isStartPlayer = startPlayer;
         // clear player view
         playerView.clearPlayerView();

@@ -45,13 +45,20 @@ public class GameImpl implements Game, GameObserver{
 
     @Override
     public int getMaxShotsOfRound() {
-        return 0;
+        return startPlayer.getCurrentShots();
     }
 
     @Override
     public void currentPlayerHasFinished() {
+       if(players.indexOf(currentPlayer)== players.size()-1){
+            currentPlayer = players.get(0);
+        }else{
+            currentPlayer = players.get(players.indexOf(currentPlayer)+1);
+        }
+        currentPlayer.myTurn(false);
 
     }
+
 
     /**
      * This method creates the players for the game.
