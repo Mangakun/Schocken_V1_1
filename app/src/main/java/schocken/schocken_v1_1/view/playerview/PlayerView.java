@@ -36,4 +36,7 @@ public interface PlayerView {
 
 
     void setCurrentPlayer(final Player currentPlayer);
+
+
+    void updatePlayerInfo();
 }

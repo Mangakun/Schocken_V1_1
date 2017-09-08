@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +42,21 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
 
     private final String debugString = "GameActivity";
 
+    private TextView playerName;
 
+    private TextView playerShots;
+
+    private TextView playerPenalties;
+    /**
+     *
+     * More like a GamePresenter
+     */
     private Game game;
 
+    /**
+     *
+     * More like a PlayerPresenter
+     */
     private Player currentPlayer;
 
     private Drawable[] dicePictures;
@@ -75,9 +90,12 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
 
 
     private void initListViewAndAdapter(){
-        ListView listView = (ListView) findViewById(R.id.PlayerView);
-        playerAdapter = new PlayerAdapter(this,R.layout.player_row);
-        listView.setAdapter(playerAdapter);
+        //ListView listView = (ListView) findViewById(R.id.PlayerView);
+        //playerAdapter = new PlayerAdapter(this,R.layout.player_row);
+        //listView.setAdapter(playerAdapter);
+        playerName = (TextView) findViewById(R.id.playerName);
+        playerShots = (TextView) findViewById(R.id.playerShots);
+        playerPenalties = (TextView) findViewById(R.id.playerPenalties);
     }
 
     private void initButtons(){
@@ -170,11 +188,21 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
     @Override
     public void setCurrentPlayer(final Player currentPlayer) {
         this.currentPlayer = currentPlayer;
+        updatePlayerInfo();
+    }
+
+    @Override
+    public void updatePlayerInfo() {
+
+        playerName.setText(currentPlayer.getName());
+        playerShots.setText(String.valueOf(currentPlayer.getCurrentShots()));
+        playerPenalties.setText(String.valueOf(currentPlayer.getPenalties()));
+
     }
 
     @Override
     public void addPlayers(final List<Player> players) {
-        playerAdapter.addAll(players);
+        //playerAdapter.addAll(players);
     }
 
 

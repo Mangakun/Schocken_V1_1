@@ -13,17 +13,40 @@
     android:orientation="vertical"
     android:gravity="center_vertical|fill_horizontal">
 
-    <ListView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/PlayerView"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:id="@+id/playerLayout">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/playerName"
+            android:layout_weight="3" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/playerShots"
+            android:layout_weight="3" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/playerPenalties"
+            android:layout_weight="3" />
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/diceLayout">
 
@@ -64,7 +87,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:gravity="bottom|center_horizontal"
         android:layout_gravity="bottom|center"
         android:id="@+id/buttonLayout">

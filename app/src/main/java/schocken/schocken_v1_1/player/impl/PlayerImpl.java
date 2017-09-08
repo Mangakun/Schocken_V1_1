@@ -308,7 +308,7 @@ public class PlayerImpl implements Player {
          - 3. time rolled
              - do not uncover -> next player
          */
-
+        playerView.updatePlayerInfo();
         if(currentShots == 0 && dicesIn.size() == 3){
             Log.d(debugMSG,"currentShots == 0 && dicesIn.size() == 3");
             playerView.enableRollTheDiceButton();
