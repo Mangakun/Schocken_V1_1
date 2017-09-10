@@ -17,4 +17,14 @@ public interface GameObserver {
      */
     void currentPlayerHasFinished();
 
+    /**
+     * TODO: documentation
+     */
+    void distributeNewMaxShots();
+
+    /**
+     * TODO: documentation
+     * @return
+     */
+    boolean isRoundFinished();
 }

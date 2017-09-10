@@ -109,6 +109,15 @@
             android:layout_weight="1"
             android:visibility="gone"
             android:onClick="stay" />
+
+        <Button
+            android:text="hoch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/up"
+            android:layout_weight="1"
+            android:onClick="up"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

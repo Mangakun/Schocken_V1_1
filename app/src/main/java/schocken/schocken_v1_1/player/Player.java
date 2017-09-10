@@ -20,6 +20,7 @@ public interface Player extends PlayerActions{
 
     /**
      * This method starts the turn of the player.
+     * TODO: documentation.
      */
     void myTurn(final boolean startPlayer);
 
@@ -46,6 +47,12 @@ public interface Player extends PlayerActions{
      * @return The penalties of the player.
      */
     int getPenalties();
+
+    /**
+     * TODO: documentation.
+     * @return
+     */
+    int calculatePenaltiesOfDiceValue();
 
     /**
      * This method returns the state of a player, if the is playing or if he has finished the current round.
@@ -77,6 +84,22 @@ public interface Player extends PlayerActions{
      * @return
      */
     List<Dice> getDicesUnderTheCup();
+
+    /**
+     * TODO: documentation.
+     * @return
+     */
+     boolean hasFirstHalf();
+
+    /**
+     * TODO: documentation.
+     * @return
+     */
+    boolean hasSecondHalf();
+    //void setFirstHalf(final boolean firstHalf);
+
+    //void setSecondHalf(final boolean secondHalf);
+
 
 
 }

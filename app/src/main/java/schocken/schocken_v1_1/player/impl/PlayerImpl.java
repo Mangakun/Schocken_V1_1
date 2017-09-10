@@ -138,15 +138,70 @@ public class PlayerImpl implements Player {
     @Override
     public int getDiceValue() {
         Collections.sort(dicesOut);
+        // the dices should be sorted here
+        for(int i =0; i<dicesOut.size()-1;++i){
+            if(dicesOut.get(i).getValue() < dicesOut.get(i).getValue()){
+                throw  new RuntimeException("The dice are not sorted!");
+            }
+        }
         double sum = 0;
         for(int i=dicesOut.size()-1; i >= 0;--i){
             sum += dicesOut.get(i).getValue()* Math.pow(10,i);
         }
-        return (int)sum;
+        /*
+        I need a multiplier, which writes the amount of penalties for the sum.
+         */
+        int multplier = 1000; // 1000, because i have three dices.
+        /*
+        Es kann davon ausgegangen werden, da sie absteigend sortiert sind und
+        die zweite Zahl eine 1 ist, dann ist die letzte Zahl auch eine 1 und es handelt sich
+        um einen Schock
+         */
+        if(dicesOut.get(1).getValue() == 1){
+            // for shock i want to have a additional zero behind the amount of penalties
+            multplier *= 10;
+        }
+        return (int)(sum+(calculatePenaltiesOfDiceValue()* multplier));
+    }
+
+    /**
+     * TODO: documentation
+     * @return
+     */
+    @Override
+    public int calculatePenaltiesOfDiceValue(){
+        // the dices should be sorted here
+        for(int i =0; i<dicesOut.size()-1;++i){
+            if(dicesOut.get(i).getValue() < dicesOut.get(i).getValue()){
+                throw  new RuntimeException("The dice are not sorted!");
+            }
+        }
+        // get dice values
+        final int diceValue1 = dicesOut.get(0).getValue();
+        final int diceValue2 = dicesOut.get(1).getValue();
+        final int diceValue3  = dicesOut.get(2).getValue();
+        // check for shock out
+        if(diceValue1 == 1 && diceValue2 == 1 && diceValue3==1 ){
+            return 13;
+        }
+        if(diceValue2 == 1 && diceValue3 == 1){
+            return diceValue1;
+        }
+        // check for general
+        if(diceValue1 == diceValue2 && diceValue2 == diceValue3){
+            return 3 ;
+        }
+        // check for street
+        if(diceValue2 == diceValue1-1 && diceValue3 == diceValue2-1){
+            return 2;
+        }
+        // normal house number
+        return 1;
     }
 
     @Override
     public void addPenalties(int penalties) throws MaxPenaltyException {
+        Log.d(debugMSG,name + " gets "+penalties+" penalties");
         this.penalties+=penalties;
         if(this.penalties > 13){ // TODO: max penalties nach "settings" verschieben
             throw new MaxPenaltyException("The penalties cant be more than "+13+"!");// TODO: max penalties nach "settings" verschieben
@@ -194,6 +249,16 @@ public class PlayerImpl implements Player {
     }
 
     @Override
+    public boolean hasFirstHalf() {
+        return false;
+    }
+
+    @Override
+    public boolean hasSecondHalf() {
+        return false;
+    }
+
+    @Override
     public void stay() throws Exception {
         if(currentShots > 2 || isFinished()){
             throw new Exception("The player cant not call \"stay\" ");
@@ -202,6 +267,13 @@ public class PlayerImpl implements Player {
         /*
         game observer next player.
          */
+        gameObserver.distributeNewMaxShots();
+        final int dicesInSize = dicesIn.size();
+        for(int i=0; i< dicesInSize;++i){
+            takeDiceOut(dicesIn.get(0));
+        }
+        System.out.println("HAEH");
+        gameObserver.currentPlayerHasFinished();
     }
 
     @Override
@@ -239,12 +311,6 @@ public class PlayerImpl implements Player {
                 Log.d(debugMSG, "Dice["+i+"] = "+ dicesIn.get(i).getValue());
             }
             playerView.uncoverDice();
-            // if the current max shots is reached
-            if(currentShots == 3) {
-                // the player is finished
-                finish = true;
-                Log.d(debugMSG, "finished");
-            }
             // create posibilities
             createPossibilities();
                 // return true, that the player could roll his dices
@@ -283,6 +349,13 @@ public class PlayerImpl implements Player {
 
     }
 
+    @Override
+    public void up() {
+        playerView.uncoverDice();
+        playerView.disableUncoverButton();
+        playerView.enableStayButton();
+    }
+
     /**
      *
      */
@@ -309,33 +382,44 @@ public class PlayerImpl implements Player {
              - do not uncover -> next player
          */
         playerView.updatePlayerInfo();
+        // first time -> only roll the dice is visible
         if(currentShots == 0 && dicesIn.size() == 3){
             Log.d(debugMSG,"currentShots == 0 && dicesIn.size() == 3");
             playerView.enableRollTheDiceButton();
-            // first time roll
-
         }else{
-            if(currentShots == 1 && isStartPlayer){
-                Log.d(debugMSG,"currentShots == 1 && isStartPlayer");
-                // set visible blind button
-                // set visible uncover button
+            /*
+                second time and third time
+             */
+            if(currentShots < gameObserver.getMaxShotsOfRound()) {
+                Log.d(debugMSG,"currentShots("+currentShots+") < maxShotsOfRound ("+gameObserver.getMaxShotsOfRound()+")");
                 playerView.enableRollTheDiceButton();
                 playerView.enableStayButton();
             }else{
-                // is the player able to roll
-                if(currentShots < gameObserver.getMaxShotsOfRound()){
-                    Log.d(debugMSG,"currentShots < gameObserver.getMaxShotsOfRound()");
-                    // set visible uncover button
-                }else{
-                    Log.d(debugMSG,"else");
-                    // not uncover
+                /*
+                Wenn die Runde noch nicht fertig ist, aber ich habe gewürfelt
+                 */
+                if (!gameObserver.isRoundFinished()){
+                    /*
+                    Ich habe nun fertig gewürfelt
+                     */
+                    Log.d(debugMSG,name +" hat dreimal gewürfelt!");
                     gameObserver.currentPlayerHasFinished();
+                }else{
+                    /*
+                    Habe ich schon alle aufgedeckt, dann bin ich halt fertig
+                     */
+                    if (dicesOut.size() == 3) {
+                        gameObserver.currentPlayerHasFinished();
+                    }else {
+                        /*
+                        Er kann nur noch anheben
+                         */
+                        playerView.disableRollTheDiceButton();
+                        playerView.disableStayButton();
+                        playerView.enableUncoverButton();
+                    }
                 }
             }
-
         }
-
     }
-
-
 }

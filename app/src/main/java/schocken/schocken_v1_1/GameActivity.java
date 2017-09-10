@@ -65,6 +65,8 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
 
     private Button rollTheDiceButton;
 
+    private Button upButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,7 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
     private void initButtons(){
         rollTheDiceButton = (Button) findViewById(R.id.rollTheDice);
         stayButton = (Button) findViewById(R.id.stay);
+        upButton = (Button) findViewById(R.id.up);
     }
 
     /**
@@ -130,6 +133,13 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
         disableStayButton();
         disableRollTheDiceButton();
         disableUncoverButton();
+        disableDices();
+    }
+
+    private void disableDices(){
+        for(int i=0; i<diceButtons.length;++i){
+            diceButtons[i].setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -154,12 +164,12 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
 
     @Override
     public void enableUncoverButton() {
-
+        upButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void disableUncoverButton() {
-
+        upButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -212,6 +222,16 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
     }
 
     public void stay(final View view){
-        Log.d(debugString, "stay");
+        try {
+            currentPlayer.stay();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void up(final View view){
+        currentPlayer.up();
+
     }
 }

@@ -39,4 +39,6 @@ public interface PlayerView {
 
 
     void updatePlayerInfo();
+
+    //void setTournAroundOption();
 }

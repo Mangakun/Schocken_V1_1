@@ -50,4 +50,9 @@ public interface PlayerActions {
      * @throws Exception
      */
     void turnAround() throws Exception;
+
+    /**
+     * TODO: documentation.
+     */
+    void up();
 }
