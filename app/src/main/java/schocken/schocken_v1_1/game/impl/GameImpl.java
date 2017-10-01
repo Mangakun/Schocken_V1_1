@@ -165,8 +165,8 @@ public class GameImpl implements Game, GameObserver{
        if(bestPlayer == null){
            bestPlayer = currentPlayer;
        }else{
-           final int bestPlayerDiceValue = bestPlayer.getDiceValue();
-           final int currentPlayerDiceValue = currentPlayer.getDiceValue();
+           final int bestPlayerDiceValue = bestPlayer.getExpandedDiceValue();
+           final int currentPlayerDiceValue = currentPlayer.getExpandedDiceValue();
            // greater than new player
             if(currentPlayerDiceValue > bestPlayerDiceValue){
                 bestPlayer = currentPlayer;
@@ -189,8 +189,8 @@ public class GameImpl implements Game, GameObserver{
         if(worstPlayer == null){
             worstPlayer = currentPlayer;
         }else{
-            final int worstPlayerDiceValue = worstPlayer.getDiceValue();
-            final int currentPlayerDiceValue = currentPlayer.getDiceValue();
+            final int worstPlayerDiceValue = worstPlayer.getExpandedDiceValue();
+            final int currentPlayerDiceValue = currentPlayer.getExpandedDiceValue();
             // greater than new player
             if(currentPlayerDiceValue < worstPlayerDiceValue){
                 bestPlayer = currentPlayer;

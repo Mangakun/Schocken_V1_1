@@ -41,14 +41,6 @@ public class PlayerImpl implements Player {
     private boolean finish;
 
     /**
-     *
-     */
-    private boolean firstHalf;
-
-
-    private boolean secondHalf;
-
-    /**
      * A list of dices which set the player out.
      */
     private List<Dice> dicesOut;
@@ -62,9 +54,6 @@ public class PlayerImpl implements Player {
      * The penalties the player has.
      */
     private int penalties;
-
-
-    private boolean block;
 
     /**
      * The shots of the player.
@@ -83,7 +72,7 @@ public class PlayerImpl implements Player {
     private boolean isStartPlayer;
 
     /**
-     *
+     * An object of the class {@link PlayerView}.
      */
     private PlayerView playerView;
 
@@ -94,6 +83,7 @@ public class PlayerImpl implements Player {
      * @param gameObserver An object of the class {@link GameObserver};
      */
     public PlayerImpl(final String name, @NonNull final GameObserver gameObserver, @NonNull final PlayerView playerView){
+        Log.d(debugMSG,"constructor of PlayerImpl");
         this.name = name;
         this.gameObserver = gameObserver;
         this.playerView = playerView;
@@ -104,9 +94,6 @@ public class PlayerImpl implements Player {
             dicesIn.add(new DiceImpl());
         }
         finish = false;
-        firstHalf = false;
-        secondHalf = false;
-        block = false;
         currentShots = 0;
         isStartPlayer = false;
     }
@@ -119,15 +106,9 @@ public class PlayerImpl implements Player {
 
     @Override
     public void myTurn(final boolean startPlayer) {
-        /*
-        1. clear GUI
-        2. create possibilities
-         */
+        Log.d(debugMSG,"turn of "+name);
         // save, if this player is the start player of the round
-        Log.d(debugMSG," It is my turn now "+name);
         isStartPlayer = startPlayer;
-        // clear player view
-        playerView.clearPlayerView();
         // connect the view with this player
         playerView.setCurrentPlayer(this);
         // create now the possibilities he has
@@ -136,7 +117,8 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public int getDiceValue() {
+    public int getDiceValueForCompare() {
+        Log.d(debugMSG,"get dice value for compare");
         Collections.sort(dicesOut);
         // the dices should be sorted here
         for(int i =0; i<dicesOut.size()-1;++i){
@@ -151,7 +133,7 @@ public class PlayerImpl implements Player {
         /*
         I need a multiplier, which writes the amount of penalties for the sum.
          */
-        int multplier = 1000; // 1000, because i have three dices.
+        int multiplier = 1000; // 1000, because i have three dices.
         /*
         Es kann davon ausgegangen werden, da sie absteigend sortiert sind und
         die zweite Zahl eine 1 ist, dann ist die letzte Zahl auch eine 1 und es handelt sich
@@ -159,17 +141,14 @@ public class PlayerImpl implements Player {
          */
         if(dicesOut.get(1).getValue() == 1){
             // for shock i want to have a additional zero behind the amount of penalties
-            multplier *= 10;
+            multiplier *= 10;
         }
-        return (int)(sum+(calculatePenaltiesOfDiceValue()* multplier));
+        return (int)(sum+(calculatePenaltiesOfDiceValue()* multiplier));
     }
 
-    /**
-     * TODO: documentation
-     * @return
-     */
+
     @Override
-    public int calculatePenaltiesOfDiceValue(){
+    public int getPenaltiesOfDiceValue(){
         // the dices should be sorted here
         for(int i =0; i<dicesOut.size()-1;++i){
             if(dicesOut.get(i).getValue() < dicesOut.get(i).getValue()){
