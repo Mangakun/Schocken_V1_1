@@ -46,7 +46,7 @@ public class PlayerImpl implements Player {
     private List<Dice> dicesOut;
 
     /**
-     * A list of dices which has the player under the cup.
+     * A list of dices which has the player under the cup and can roll with it.
      */
     private List<Dice> dicesIn;
 
@@ -119,16 +119,19 @@ public class PlayerImpl implements Player {
     @Override
     public int getDiceValueForCompare() {
         Log.d(debugMSG,"get dice value for compare");
-        Collections.sort(dicesOut);
+        // create a new arraylist
+        List<Dice> dices = new ArrayList<>(dicesOut);
+        // sort copy
+        Collections.sort(dices);
         // the dices should be sorted here
-        for(int i =0; i<dicesOut.size()-1;++i){
-            if(dicesOut.get(i).getValue() < dicesOut.get(i).getValue()){
+        for(int i =0; i<dices.size()-1;++i){
+            if(dices.get(i).getValue() < dices.get(i).getValue()){
                 throw  new RuntimeException("The dice are not sorted!");
             }
         }
         double sum = 0;
-        for(int i=dicesOut.size()-1; i >= 0;--i){
-            sum += dicesOut.get(i).getValue()* Math.pow(10,i);
+        for(int i=dices.size()-1; i >= 0;--i){
+            sum += dices.get(i).getValue()* Math.pow(10,i);
         }
         /*
         I need a multiplier, which writes the amount of penalties for the sum.
@@ -139,39 +142,48 @@ public class PlayerImpl implements Player {
         die zweite Zahl eine 1 ist, dann ist die letzte Zahl auch eine 1 und es handelt sich
         um einen Schock
          */
-        if(dicesOut.get(1).getValue() == 1){
+        if(dices.get(1).getValue() == 1){
             // for shock i want to have a additional zero behind the amount of penalties
             multiplier *= 10;
         }
-        return (int)(sum+(calculatePenaltiesOfDiceValue()* multiplier));
+        return (int)(sum+(getPenaltiesOfDiceValue()* multiplier));
     }
 
 
     @Override
     public int getPenaltiesOfDiceValue(){
+        Log.d(debugMSG,"getPenaltiesOfDiceValue");
+        // create a new arraylist
+        List<Dice> dices = new ArrayList<>(dicesOut);
+        // sort copy
+        Collections.sort(dices);
         // the dices should be sorted here
-        for(int i =0; i<dicesOut.size()-1;++i){
-            if(dicesOut.get(i).getValue() < dicesOut.get(i).getValue()){
+        for(int i =0; i<dices.size()-1;++i){
+            if(dices.get(i).getValue() < dicesOut.get(i).getValue()){
                 throw  new RuntimeException("The dice are not sorted!");
             }
         }
         // get dice values
-        final int diceValue1 = dicesOut.get(0).getValue();
-        final int diceValue2 = dicesOut.get(1).getValue();
-        final int diceValue3  = dicesOut.get(2).getValue();
+        final int diceValue1 = dices.get(0).getValue();
+        final int diceValue2 = dices.get(1).getValue();
+        final int diceValue3  = dices.get(2).getValue();
         // check for shock out
         if(diceValue1 == 1 && diceValue2 == 1 && diceValue3==1 ){
+            Log.d(debugMSG,"Schock-out return 13");
             return 13;
         }
         if(diceValue2 == 1 && diceValue3 == 1){
+            Log.d(debugMSG,"Schock return "+diceValue1);
             return diceValue1;
         }
         // check for general
         if(diceValue1 == diceValue2 && diceValue2 == diceValue3){
+            Log.d(debugMSG,"General return 13");
             return 3 ;
         }
         // check for street
         if(diceValue2 == diceValue1-1 && diceValue3 == diceValue2-1){
+            Log.d(debugMSG, "street return 2");
             return 2;
         }
         // normal house number
@@ -208,11 +220,6 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public boolean isBlocked() {
-        return block;
-    }
-
-    @Override
     public int getCurrentShots() {
         return currentShots;
     }
@@ -223,18 +230,15 @@ public class PlayerImpl implements Player {
     }
 
     @Override
-    public List<Dice> getDicesUnderTheCup() {
+    public List<Dice> getDicesIn() {
         return dicesIn;
     }
 
     @Override
-    public boolean hasFirstHalf() {
-        return false;
-    }
-
-    @Override
-    public boolean hasSecondHalf() {
-        return false;
+    public void reset() {
+        Log.d(debugMSG,"reset");
+        penalties = 0;
+        Log.d(debugMSG,"penalties = "+penalties);
     }
 
     @Override
@@ -255,27 +259,6 @@ public class PlayerImpl implements Player {
         gameObserver.currentPlayerHasFinished();
     }
 
-    @Override
-    public void block() {
-        block = true;
-        finish = true;
-        /*
-        game observer next player.
-         */
-
-    }
-
-    @Override
-    public void blind() throws Exception {
-        if(currentShots > 0){
-            throw new Exception("The player cant not call \"blind\" ");
-        }
-        finish = true;
-        //
-        //blind call
-        //game obsever next player
-        //
-    }
 
     @Override
     public boolean rollTheDice() {
@@ -289,19 +272,23 @@ public class PlayerImpl implements Player {
                 dicesIn.get(i).roll();
                 Log.d(debugMSG, "Dice["+i+"] = "+ dicesIn.get(i).getValue());
             }
-            playerView.uncoverDice();
+
+           if(playerView != null) {
+               playerView.uncoverDices();
+            }
             // create posibilities
             createPossibilities();
-                // return true, that the player could roll his dices
-                return true;
+            // return true, that the player could roll his dices
+            return true;
         }else{
-                // return false, that the player could not roll his dices
-                return  false;
+            // return false, that the player could not roll his dices
+            return  false;
         }
     }
 
     @Override
     public boolean takeDiceInAgain(final Dice dice) throws DiceAlreadyInException {
+        Log.d(debugMSG,"take dice in again");
         // take in the dice
         if(dicesIn.contains(dice)){
             throw new DiceAlreadyInException(dice);
@@ -314,6 +301,7 @@ public class PlayerImpl implements Player {
 
     @Override
     public boolean takeDiceOut(final Dice dice) throws DiceAlreadyOutException {
+        Log.d(debugMSG,"take dice out");
         if(dicesOut.contains(dice)){
             throw new DiceAlreadyOutException(dice);
         }
@@ -323,22 +311,24 @@ public class PlayerImpl implements Player {
         return dicesIn.remove(dice);
     }
 
-    @Override
-    public void turnAround() throws Exception {
-
-    }
 
     @Override
-    public void up() {
-        playerView.uncoverDice();
-        playerView.disableUncoverButton();
-        playerView.enableStayButton();
+    public void uncover() {
+        Log.d(debugMSG,"uncover");
+        if(playerView != null) {
+            playerView.uncoverDices();
+            playerView.disableUncoverButton();
+            playerView.enableStayButton();
+        }
     }
 
     /**
      *
      */
-    private void createPossibilities(){
+    private void createPossibilities() {
+        if (playerView != null && gameObserver != null) {
+
+
         /*
         - It is his turn
           - roll the dice
@@ -360,42 +350,46 @@ public class PlayerImpl implements Player {
          - 3. time rolled
              - do not uncover -> next player
          */
-        playerView.updatePlayerInfo();
-        // first time -> only roll the dice is visible
-        if(currentShots == 0 && dicesIn.size() == 3){
-            Log.d(debugMSG,"currentShots == 0 && dicesIn.size() == 3");
-            playerView.enableRollTheDiceButton();
-        }else{
+
+            playerView.updatePlayerInfo();
+
+
+            // first time -> only roll the dice is visible
+            if (currentShots == 0 && dicesIn.size() == 3) {
+                Log.d(debugMSG, "currentShots == 0 && dicesIn.size() == 3");
+                playerView.enableRollTheDiceButton();
+            } else {
             /*
                 second time and third time
              */
-            if(currentShots < gameObserver.getMaxShotsOfRound()) {
-                Log.d(debugMSG,"currentShots("+currentShots+") < maxShotsOfRound ("+gameObserver.getMaxShotsOfRound()+")");
-                playerView.enableRollTheDiceButton();
-                playerView.enableStayButton();
-            }else{
+                if (currentShots < gameObserver.getMaxShotsOfRound()) {
+                    Log.d(debugMSG, "currentShots(" + currentShots + ") < maxShotsOfRound (" + gameObserver.getMaxShotsOfRound() + ")");
+                    playerView.enableRollTheDiceButton();
+                    playerView.enableStayButton();
+                } else {
                 /*
                 Wenn die Runde noch nicht fertig ist, aber ich habe gewürfelt
                  */
-                if (!gameObserver.isRoundFinished()){
+                    if (!gameObserver.isRoundFinished()) {
                     /*
                     Ich habe nun fertig gewürfelt
                      */
-                    Log.d(debugMSG,name +" hat dreimal gewürfelt!");
-                    gameObserver.currentPlayerHasFinished();
-                }else{
+                        Log.d(debugMSG, name + " hat dreimal gewürfelt!");
+                        gameObserver.currentPlayerHasFinished();
+                    } else {
                     /*
                     Habe ich schon alle aufgedeckt, dann bin ich halt fertig
                      */
-                    if (dicesOut.size() == 3) {
-                        gameObserver.currentPlayerHasFinished();
-                    }else {
+                        if (dicesOut.size() == 3) {
+                            gameObserver.currentPlayerHasFinished();
+                        } else {
                         /*
                         Er kann nur noch anheben
                          */
-                        playerView.disableRollTheDiceButton();
-                        playerView.disableStayButton();
-                        playerView.enableUncoverButton();
+                            playerView.disableRollTheDiceButton();
+                            playerView.disableStayButton();
+                            playerView.enableUncoverButton();
+                        }
                     }
                 }
             }

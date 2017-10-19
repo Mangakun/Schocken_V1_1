@@ -41,7 +41,7 @@ public class GameImpl implements Game, GameObserver{
     public GameImpl(final GameView gameView,final PlayerView playerView, @NonNull final String[] players){
         this.gameView = gameView;
         this.players = createPlayers(playerView, players);
-        gameView.addPlayers(this.players);
+        //gameView.addPlayers(this.players);
         bestPlayer = null;
         worstPlayer = null;
     }
@@ -109,22 +109,22 @@ public class GameImpl implements Game, GameObserver{
 
 
     private void roundOrGameFinished(){
-        /*
-            sollten alle 13 Steine verbraucht sein
-             */
-        if(worstPlayer.hasFirstHalf() && worstPlayer.hasSecondHalf()){
-                /*
-                Das Spiel ist zuende
-                Neuanfang -> Der verlorere Spieler wird in Historie gespeichert (Runde ?)
-                Neue Runde oder schließen anzeigen
-                Auf Tournament-Mode eingehen
-                 */
-        }else{
-                /*
-                Weiter mit runde
-                Irgendwas wie Weiter soll sichtbar sein!
-                 */
-        }
+//        /*
+//            sollten alle 13 Steine verbraucht sein
+//             */
+//        if(worstPlayer.hasFirstHalf() && worstPlayer.hasSecondHalf()){
+//                /*
+//                Das Spiel ist zuende
+//                Neuanfang -> Der verlorere Spieler wird in Historie gespeichert (Runde ?)
+//                Neue Runde oder schließen anzeigen
+//                Auf Tournament-Mode eingehen
+//                 */
+//        }else{
+//                /*
+//                Weiter mit runde
+//                Irgendwas wie Weiter soll sichtbar sein!
+//                 */
+//        }
     }
 
 
@@ -165,8 +165,8 @@ public class GameImpl implements Game, GameObserver{
        if(bestPlayer == null){
            bestPlayer = currentPlayer;
        }else{
-           final int bestPlayerDiceValue = bestPlayer.getExpandedDiceValue();
-           final int currentPlayerDiceValue = currentPlayer.getExpandedDiceValue();
+           final int bestPlayerDiceValue = bestPlayer.getDiceValueForCompare();
+           final int currentPlayerDiceValue = currentPlayer.getDiceValueForCompare();
            // greater than new player
             if(currentPlayerDiceValue > bestPlayerDiceValue){
                 bestPlayer = currentPlayer;
@@ -189,8 +189,8 @@ public class GameImpl implements Game, GameObserver{
         if(worstPlayer == null){
             worstPlayer = currentPlayer;
         }else{
-            final int worstPlayerDiceValue = worstPlayer.getExpandedDiceValue();
-            final int currentPlayerDiceValue = currentPlayer.getExpandedDiceValue();
+            final int worstPlayerDiceValue = worstPlayer.getDiceValueForCompare();
+            final int currentPlayerDiceValue = currentPlayer.getDiceValueForCompare();
             // greater than new player
             if(currentPlayerDiceValue < worstPlayerDiceValue){
                 bestPlayer = currentPlayer;
@@ -213,7 +213,7 @@ public class GameImpl implements Game, GameObserver{
         if(bestPlayer == worstPlayer){
             throw new RuntimeException("Best player cant be equal worst player");
         }else{
-            int penaltiesToDistribute = bestPlayer.calculatePenaltiesOfDiceValue();
+            int penaltiesToDistribute = bestPlayer.getPenaltiesOfDiceValue();
             if(penaltiesToDistribute == 13){ // TODO: change to enmum number
                 throw new UnsupportedOperationException("Shock out is not implemented yet");
                 /*

@@ -6,6 +6,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import schocken.schocken_v1_1.player.dice.Dice;
+import schocken.schocken_v1_1.player.exceptions.DiceAlreadyOutException;
 import schocken.schocken_v1_1.player.exceptions.MaxPenaltyException;
 import schocken.schocken_v1_1.player.impl.PlayerImpl;
 
@@ -39,7 +44,7 @@ public class PlayerTest {
      */
     @Before
     public void resetPlayer(){
-        // TODO: reset einbauen !!
+        player.reset();
     }
 
 
@@ -120,147 +125,33 @@ public class PlayerTest {
         }
     }
 
-    /**
-     * This method tests the block method.
-     */
-    @Test
-    public void isBlockedTest(){
-        // call method block
-        player.block();
-        // first the block flag should be true
-        Assert.assertTrue("The block flag should be true", player.isBlocked());
-        // second the player is finished
-        Assert.assertTrue("The player should be finished", player.isFinished());
-    }
-
-    /**
-     * This method tests the stay method.
-     */
-    @Test
-    public void stayTest(){
-        // call method stay
-        try {
-            player.stay();
-        } catch (Exception e) {
-            Assert.fail(e.getMessage());
-        }
-        // the player is finished
-        Assert.assertTrue("The player should be finished", player.isFinished());
-    }
-
-    /**
-     * This method tests the stay method.
-     */
-    @Test
-    public void blindTest(){
-        try {
-            player.blind();
-        } catch (final Exception e) {
-            Assert.fail("The player can call \"blind\"");
-        }
-        // the player is finished
-        Assert.assertTrue("The player should be finished", player.isFinished());
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest1(){
-        // roll the dice first
-        Assert.assertTrue(player.rollTheDice());
-        Assert.assertFalse("The player should not be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice once",1,player.getCurrentShots());
-        // roll the dice second
-        Assert.assertTrue(player.rollTheDice());
-        Assert.assertFalse("The player should not be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice twice",2,player.getCurrentShots() );
-        // roll the dice third.
-        Assert.assertTrue(player.rollTheDice());
-        Assert.assertTrue("The player should be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice three times",3,player.getCurrentShots() );
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest2(){
-        // roll the dice first
-        Assert.assertTrue(player.rollTheDice());
-        Assert.assertFalse("The player should not be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice once",1,player.getCurrentShots());
-        // try to call blind
-        try {
-            player.blind();
-            Assert.fail("The player cant call blind");
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        // roll the dice first
-        Assert.assertTrue(player.rollTheDice());
-        Assert.assertFalse("The player should not be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice twice",2,player.getCurrentShots());
-
-        try {
-            player.stay();
-        } catch (Exception e) {
-            Assert.fail("The player can call stay");
-        }
-        Assert.assertTrue("The player should be finished", player.isFinished());
-        Assert.assertEquals("The player has played the dice twice",2,player.getCurrentShots());
-        try {
-            player.blind();
-            Assert.fail("The player cant call blind");
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            player.stay();
-            Assert.fail("The player cant call stay");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest3(){
-        // TODO Michelle fragen
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest4(){
-        // TODO Michelle fragen
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest5(){
-        // TODO Michelle fragen
-    }
-
-    /**
-     * This method tests the roll the dice method.
-     */
-    @Test
-    public void rollTheDiceTest6(){
-        // TODO Michelle fragen
-    }
-
-    /**
-     * This method tests the combination of the player and the dices.
+   /**
+     * This method tests the
      */
     @Test
     public void playerDiceTest(){
+        // roll the dice first
+        Assert.assertTrue(player.rollTheDice());
+        List<Dice> dicesIn = new ArrayList<>(player.getDicesIn());
+        Assert.assertEquals("Es können keine Würfel draussen sein!",player.getDicesOut().size(),0);
+        Assert.assertEquals("Es müssen 3 Würfel im Becher sein!",player.getDicesIn().size(),3);
+        // take a dice out
+        final Dice dice1 = player.getDicesIn().get(0);
+        try {
+            Assert.assertTrue(player.takeDiceOut(dice1));
+        } catch (DiceAlreadyOutException e) {
+            e.printStackTrace();
+            Assert.fail("Der Würfel darf nicht schon in der Liste enthalten sein!");
+        }
+        Assert.assertEquals("Es darf nur 1 Würfel draussen sein!",player.getDicesOut().size(),1);
+        Assert.assertEquals("Es müssen 2 Würfel im Becher sein!",player.getDicesIn().size(),2);
+        final Dice dice2 = player.getDicesIn().get(0);
+        Assert.assertNotEquals("Die beiden Würfel dürfen nicht gleich sein!",dice1,dice2);
+
 
     }
+
+
+
 
 }

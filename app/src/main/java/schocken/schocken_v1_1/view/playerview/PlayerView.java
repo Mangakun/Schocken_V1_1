@@ -62,5 +62,10 @@ public interface PlayerView {
      */
     void updatePlayerInfo();
 
+    /**
+     * This method uncover the dices.
+     */
+    void uncoverDices();
+
     //void setTournAroundOption();
 }

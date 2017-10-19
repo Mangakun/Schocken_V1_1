@@ -11,9 +11,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.List;
+
 import schocken.schocken_v1_1.game.Game;
 import schocken.schocken_v1_1.game.impl.GameImpl;
+import schocken.schocken_v1_1.listener.DiceClickListener;
 import schocken.schocken_v1_1.player.Player;
+import schocken.schocken_v1_1.player.dice.Dice;
 import schocken.schocken_v1_1.view.gameview.GameView;
 import schocken.schocken_v1_1.view.playerview.PlayerView;
 
@@ -200,18 +204,18 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
         stayButton.setVisibility(View.GONE);
     }
 
-//    @Override
-//    public void uncoverDice() {
-//        // get list of dices which are under the cup
-//        final List<Dice> dicesUnderCup = currentPlayer.getDicesUnderTheCup();
-//        // iterate over these dices
-//        for(int i=0; i< dicesUnderCup.size();++i){
-//            diceButtons[i].setOnClickListener(new DiceClickListener(currentPlayer,dicesUnderCup.get(i)));
-//            diceButtons[i].setImageDrawable(dicePictures[dicesUnderCup.get(i).getValue()-1]);
-//            diceButtons[i].setVisibility(View.VISIBLE);
-//            diceButtons[i].setBackgroundColor(0);
-//        }
-//    }
+    @Override
+    public void uncoverDices() {
+        // get list of dices which are under the cup
+        final List<Dice> dicesUnderCup = currentPlayer.getDicesIn();
+        // iterate over these dices
+        for(int i=0; i< dicesUnderCup.size();++i){
+            diceButtons[i].setOnClickListener(new DiceClickListener(currentPlayer,dicesUnderCup.get(i)));
+            diceButtons[i].setImageDrawable(dicePictures[dicesUnderCup.get(i).getValue()-1]);
+            diceButtons[i].setVisibility(View.VISIBLE);
+            diceButtons[i].setBackgroundColor(0);
+        }
+    }
 
     @Override
     public void setCurrentPlayer(final Player currentPlayer) {
@@ -224,7 +228,7 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
      * This method clears the player view.
      */
     private void clearPlayerView() {
-        Log.d(debugString,"clear "+currentPlayer.getName()+" from view");
+        //Log.d(debugString,"clear "+currentPlayer.getName()+" from view");
         currentPlayer = null;
         disableBlindButton();
         disableStayButton();
@@ -276,7 +280,7 @@ public class GameActivity extends AppCompatActivity implements GameView,PlayerVi
      */
     public void up(final View view){
         Log.d(debugString,"Up button clicked");
-        currentPlayer.up();
+        currentPlayer.uncover();
 
     }
 }

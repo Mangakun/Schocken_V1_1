@@ -16,16 +16,16 @@ public interface PlayerActions {
      */
     void stay() throws Exception;
 
-    /**
-     * This method sets the block for the current player active
-     */
-    void block();
-
-    /**
-     * This method sets the class blind active.
-     * @throws Exception
-     */
-    void blind() throws Exception;
+//    /**
+//     * This method sets the block for the current player active
+//     */
+//    void block();
+//
+//    /**
+//     * This method sets the class blind active.
+//     * @throws Exception
+//     */
+//    void blind() throws Exception;
 
     /**
      * This method rolls the dices of the current player.
@@ -45,14 +45,14 @@ public interface PlayerActions {
      */
     boolean takeDiceOut(final Dice dice) throws DiceAlreadyOutException;
 
-    /**
-     * This method turns around the dices.
-     * @throws Exception
-     */
-    void turnAround() throws Exception;
+//    /**
+//     * This method turns around the dices.
+//     * @throws Exception
+//     */
+//    void turnAround() throws Exception;
 
     /**
-     * TODO: documentation.
+     * This method
      */
-    void up();
+    void uncover();
 }

@@ -79,6 +79,13 @@ public interface Player extends PlayerActions{
      */
     List<Dice> getDicesOut();
 
+    List<Dice> getDicesIn();
+
+    /**
+     * This method resets the player.
+     */
+    void reset();
+
 //    /**
 //     * This method returns the dices which are under the cup.
 //     * @return The dices which are under the cup.
